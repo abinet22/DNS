@@ -1,0 +1,669 @@
+<html lang="en" class="perfect-scrollbar-on"><head>
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>
+     Manage Folder
+    </title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport">
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <!-- CSS Files -->
+    <link href="../../../assets2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../assets2/css/now-ui-dashboard.css?v=1.5.0" rel="stylesheet">
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="../../../assets2/demo/demo.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.5.0/css/perfect-scrollbar.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.5.0/dist/perfect-scrollbar.jquery.min.js"></script>
+
+    <!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<!-- DataTables jQuery -->
+
+
+    <style>
+       
+
+        .folder-card {
+          
+            border-radius: 10px;
+            padding: 1.5rem;
+            
+            transition: transform 0.2s, box-shadow 0.2s;
+        
+        }
+
+        .folder-card:hover {
+            transform: translateY(-20px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .folder-icon {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .folder-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .add-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 600px) {
+          
+        
+        }
+    </style>
+  <body class="">
+    <div class="wrapper ">
+      <%- include ('./partials/sidebaruser') %>
+      <div class="main-panel ps" id="main-panel" style="min-height: 300px; overflow: hidden;">
+        <!-- Navbar -->
+        <%- include ('./partials/top') %>
+        <!-- End Navbar -->
+        <div class="panel-header panel-header-sm">
+        </div>
+        <div class="content " id="container" >
+            <div class="row">
+                <div class="button-container">
+                   
+                    <!-- <button href="#" id="uploadfile" class="btn btn-neutral btn-icon btn-round btn-lg">
+                        <i class="now-ui-icons arrows-1_cloud-upload-94"></i>
+                       
+                    </button> -->
+                
+                  </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <span id="breadcrumb"><%- navlocator %></span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                      <div  class="row " id="folderContainer">
+                        <!-- Sample folders -->
+                        <% folders.forEach(function(folder) { %>
+                          <div class="col-md-4 mb-2 folder-card">
+                              <a href="/selamcdms/cdmsusers/subfolder/<%= folder.id %>" class="">
+                                  <span class="fa fa-folder fa-10x" style="color:#0c2646"></span>
+                                  <h3 style="text-transform: uppercase;"><%= folder.name %></h3>
+                              
+                                  <div class="folder-meta">
+                                    <span><%= folder.subFolderCount %> Folder</span>
+                                    <span><%= folder.fileCount %> Files</span>
+                                  </div>
+                              </a>
+                      
+                              <!-- Share Button -->
+                              <!-- <button class="btn btn-primary btn-sm mt-2 share-btn" data-folder-id="<%= folder.id %>" data-folder-name="<%= folder.name %>" data-toggle="modal" data-target="#shareModal">
+                                  <i class="fas fa-share-alt"></i> Share
+                              </button> -->
+                          </div>
+                      <% }); %>
+                      
+                       
+                    </div>
+                      
+                        <div class="table-responsive" >
+                          <table class="table" id="fileTable">
+                            <thead class="text-primary">
+                              <tr>
+                                <th>File Name</th>
+                                <th>Description</th>
+                                <th>Upload Date</th>
+                                <th>Download</th>
+                                <th class="text-right">Open</th>
+                                <!-- <th class="text-right">Share</th> -->
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <% if(files.length >0) { %>
+                                    <% files.forEach(function(file) { %>
+                                        <tr>
+                                          
+                                          <td><%= file.fileName %> </td>
+                                          <td><%= file.description %></td>
+                                          <td><%= new Date(file.createdAt).toLocaleDateString() %> G.C</td>
+                                          <td>
+                                            <a href="/selamcdms/<%= file.filePath %>" 
+                                               download="<%= file.fileName %>" 
+                                               class="btn btn-primary btn-sm">
+                                              Download
+                                            </a>
+                                          </td>
+                                        
+                                          <td class="text-right">
+                                            <a href="/selamcdms<%= file.filePath %>" class="btn btn-primary btn-sm" target="_blank">
+                                              Open
+                                            </a>
+                                           
+                                          </td>
+                                      
+                                          <!-- <td class="text-right">
+                                            <button class="btn btn-info btn-sm shareBtn" data-file-id="<%= file.fileId %>" data-toggle="modal" data-target="#shareModal2">
+                                              Share
+                                            </button>
+                                          </td> -->
+                                        </tr>
+                                      <% }); %>
+                                      
+                              <%  } %>
+                          
+                            </tbody>
+                          </table>
+                          
+                           
+                        </div>
+                    
+                        <!-- <button class="add-button"  id="addfolder" >
+                            <i class="now-ui-icons ui-1_simple-add"></i>
+                            
+                        </button> -->
+                       
+                    
+                       
+                    </div>
+                  </div>
+                </div>
+              
+              </div>
+        </div>
+        <%- include ('./partials/footer') %>
+      </div>
+    <!--   Core JS Files   -->
+    <div class="modal fade" id="addFolderModal" tabindex="-1" role="dialog" aria-labelledby="addFolderModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addFolderModalLabel">Add New Folder</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="addFolderForm">
+              <div class="form-group">
+                <label for="folderName">Folder Name</label>
+                <input type="text" class="form-control mb-2" id="folderName" placeholder="Enter folder name">
+                <input type="hidden" class="form-control" id="parentFolderId"  name="parentFolderId" value="<%= folderid %>">
+                <input type="hidden" class="form-control" id="parentFolderName"  name="parentFolderName">
+                
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="createFolderBtn">Create Folder</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Upload File Modal -->
+    <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadFileModalLabel">Upload File</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="uploadFileForm">
+            
+              <div class="form-group">
+                  <label for="fileUpload">Description</label>
+                  <textarea type="text" class="form-control" id="description" name="description"></textarea>
+                  <input type="hidden" class="form-control" id="folderId"  name="folderId" value="<%= partnerid %>">
+                </div>
+                <div class="form-group">
+                  <label for="fileUpload">To Upload File Click Here</label>
+                  <input type="file" class="form-control-file" id="fileUpload" multiple accept=".doc, .docx, .pdf, .accdb, .xls, .xlsx">
+            <div id="fileList"></div>
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="uploadBtn">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap Modal for file viewing -->
+    <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="shareModalLabel">Share Folder</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form id="shareFolderForm">
+                      <input type="hidden" id="selectedFolderId" name="folderId">
+  
+                      <p>Share folder <strong id="selectedFolderName"></strong> with:</p>
+                      
+                      <!-- User Selection (Multiple) -->
+                      <select id="userSelect" name="users" class="form-control" multiple required>
+                          <% userlist.forEach(function(user) { %>
+                              <option value="<%= user.user_id %>"><%= user.username %> (<%= user.fullname %>)</option>
+                          <% }); %>
+                      </select>
+                      
+                      <button type="submit" class="btn btn-success mt-3">
+                          <i class="fas fa-check"></i> Share
+                      </button>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="modal fade" id="shareModal2" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="shareModalLabel">Share File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h6>Select Users to Share:</h6>
+          <select id="userSelect2" name="users" class="form-control" multiple required>
+            <% userlist.forEach(function(user) { %>
+                <option value="<%= user.user_id %>"><%= user.username %> (<%= user.fullname %>)</option>
+            <% }); %>
+        </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="shareFileBtn">Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="../../../assets2/js/core/jquery.min.js"></script>
+
+    <script src="../../../assets2/js/core/popper.min.js"></script>
+    <script src="../../../assets2/js/core/bootstrap.min.js"></script>
+    <!--  Google Maps Plugin    -->
+    <!-- Chart JS -->
+    <!--  Notifications Plugin    -->
+    <script src="../../../assets2/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="../../../assets2/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+    <script src="../../../assets2/demo/demo.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+         
+          $("#addfolder").click(function(e) {
+          e.preventDefault();
+          $("#addFolderModal").modal('show');
+        });
+        $("#uploadfile").click(function(e) {
+          e.preventDefault();
+          $("#uploadFileModal").modal('show');
+        });
+        $("#uploadBtn").click(function() {
+            uploadFiles();
+             $("#uploadFileModal").modal('hide');
+        });
+            $("#fileUpload").change(function() {
+          var files = $(this)[0].files;
+          var fileListDiv = $("#fileList");
+          fileListDiv.empty();
+          
+          if (files.length > 0) {
+            fileListDiv.append("<p>Selected Files:</p>");
+            var list = $("<ul></ul>");
+            for (var i = 0; i < files.length; i++) {
+              list.append("<li>" + files[i].name + "</li>");
+            }
+            fileListDiv.append(list);
+          }
+        });
+    
+    
+        $("#createFolderBtn").click(function() {
+                // folder creation logic here
+                createFolder();
+                $("#addFolderModal").modal('hide');
+            });
+    
+      });
+    
+     
+
+
+ </script>
+
+
+    <script>
+    async function uploadFiles() {
+  const files = document.getElementById('fileUpload').files;
+  const description = document.getElementById('description').value;
+  const folderId = document.getElementById('folderId').value;
+
+  if (files.length === 0) {
+    alert('Please select files to upload.');
+    return;
+  }
+
+  const formData = new FormData();
+  for (let i = 0; i < files.length; i++) {
+    formData.append('files', files[i]);
+  }
+  
+  // Add description and folderId to the FormData
+  formData.append('description', description);
+  formData.append('folderId', folderId);
+
+  try {
+    const response = await $.ajax({
+      url: '/selamcdms/filemanagement/upload',
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+    });
+
+    console.log('Files uploaded successfully:', response);
+    alert('Files uploaded successfully!');
+    location.reload();
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    alert('Error uploading files. See console for details.');
+  }
+}
+
+  async function createFolder() {
+      var folderName = $("#folderName").val();
+      var parentFolderId = $("#parentFolderId").val();  
+      var parentFolderName = $("#parentFolderName").val();  
+      if (!folderName) {
+          alert("Please enter a folder name.");
+          return;
+      }
+  
+      try {
+          const response = await $.ajax({
+              url: '/selamcdms/filemanagement/createFolder',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({ folderName: folderName,parentFolderId:parentFolderId}),
+          });
+  
+          console.log('Folder created:', response);
+          alert('Folder created successfully!');
+      location.reload();
+      } catch (error) {
+          console.error('Error creating folder:', error);
+          alert('Error creating folder. See console for details.');
+      }
+  }
+ 
+ 
+ </script>
+ <script>
+   
+$(document).ready(function() {
+  $('#fileTable').DataTable({
+                  "pageLength": 10,   // Set the default page length to 10 items
+                  "searching": true,  // Enable search functionality
+                  "paging": true,     // Enable paging functionality
+                  "ordering": true,   // Enable sorting
+                  "info": true        // Display info about the table
+              });
+        const container = document.querySelector('#container');
+        new PerfectScrollbar(container, {
+            suppressScrollX: true, // Disable horizontal scroll
+            useBothWheelAxes: true, // Allow scrolling with both axes (vertical & horizontal)
+            wheelSpeed: 1, // Speed of scrolling
+            wheelPropagation: true, // Allow scrolling to propagate outside the element
+        });
+    });
+</script>
+
+<script>
+  $(document).ready(function() {
+      // Open modal with folder details
+      $(".share-btn").click(function() {
+          var folderId = $(this).data("folder-id");
+          var folderName = $(this).data("folder-name");
+
+          $("#selectedFolderId").val(folderId);
+          $("#selectedFolderName").text(folderName);
+      });
+
+      // Handle Share Submission via AJAX
+      $("#shareFolderForm").submit(function(event) {
+          event.preventDefault();
+
+          var folderId = $("#selectedFolderId").val();
+          var selectedUsers = $("#userSelect").val(); // Get selected users
+
+          $.ajax({
+              url: "/selamcdms/filemanagement/share-folder",
+              type: "POST",
+              data: { folderId: folderId, users: selectedUsers },
+              success: function(response) {
+                $.notify({
+            message: response.message // Using the message from the server
+        }, {
+            type: 'success', // Type of notification
+            placement: {
+                from: "top", 
+                align: "right"
+            },
+            offset: {
+                x: 20,
+                y: 60
+            },
+            delay: 5000, // Time before hiding the notification
+            z_index: 1050
+        });
+        $("#shareModal").modal("hide");
+              },
+              error: function(xhr, status, error) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "An unknown error occurred.";
+        
+        $.notify({
+            message: errorMessage // Using the error from the server
+        }, {
+            type: 'danger', // Type of notification
+            placement: {
+                from: "top", 
+                align: "right"
+            },
+            offset: {
+                x: 20,
+                y: 60
+            },
+            delay: 5000, // Time before hiding the notification
+            z_index: 1050
+        });
+              }
+          });
+      });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+  // Open modal and load users when share button is clicked
+  $('.shareBtn').on('click', function() {
+    var fileId = $(this).data('file-id'); // Get fileId from the button
+    $('#shareFileBtn').data('file-id', fileId); // Store fileId in the share button
+
+
+  });
+
+  // Handle file sharing when share button in modal is clicked
+  $('#shareFileBtn').on('click', function() {
+    var fileId = $(this).data('file-id');
+    var selectedUsers = $('#userSelect2').val(); // Get selected user IDs
+
+    if (selectedUsers.length === 0) {
+      alert("Please select at least one user to share the file.");
+      return;
+    }
+
+    // Send request to share the file with selected users
+    $.ajax({
+      url: '/selamcdms/filemanagement/share-file',  // Endpoint to handle file sharing (you'll need to create this)
+      method: 'POST',
+      data: {
+        fileId: fileId,
+        users: selectedUsers
+      },
+      success: function(response) {
+        $.notify({
+            message: response.message // Using the message from the server
+        }, {
+            type: 'success', // Type of notification
+            placement: {
+                from: "top", 
+                align: "right"
+            },
+            offset: {
+                x: 20,
+                y: 40
+            },
+            delay: 1000, // Time before hiding the notification
+            z_index: 1050
+        });
+        $('#shareModal2').modal('hide'); // Close the modal
+      },
+      error: function() {
+        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "An unknown error occurred.";
+        
+        $.notify({
+            message: errorMessage // Using the error from the server
+        }, {
+            type: 'danger', // Type of notification
+            placement: {
+                from: "top", 
+                align: "right"
+            },
+            offset: {
+                x: 20,
+                y: 60
+            },
+            delay: 5000, // Time before hiding the notification
+            z_index: 1050
+        });
+      }
+    });
+  });
+});
+
+</script>
+
+<script>
+  $(document).ready(function() {
+  // Open modal and load users when share button is clicked
+  $('.shareBtn').on('click', function() {
+    var fileId = $(this).data('file-id'); // Get fileId from the button
+    $('#shareFileBtn').data('file-id', fileId); // Store fileId in the share button
+
+
+  });
+
+  // Handle file sharing when share button in modal is clicked
+  $('#shareFileBtn').on('click', function() {
+    var fileId = $(this).data('file-id');
+    var selectedUsers = $('#userSelect2').val(); // Get selected user IDs
+
+    if (selectedUsers.length === 0) {
+      alert("Please select at least one user to share the file.");
+      return;
+    }
+
+    // Send request to share the file with selected users
+    $.ajax({
+      url: '/selamcdms/filemanagement/share-file',  // Endpoint to handle file sharing (you'll need to create this)
+      method: 'POST',
+      data: {
+        fileId: fileId,
+        users: selectedUsers
+      },
+      success: function(response) {
+        $.notify({
+            message: response.message // Using the message from the server
+        }, {
+            type: 'success', // Type of notification
+            placement: {
+                from: "top", 
+                align: "right"
+            },
+            offset: {
+                x: 20,
+                y: 40
+            },
+            delay: 1000, // Time before hiding the notification
+            z_index: 1050
+        });
+        $('#shareModal2').modal('hide'); // Close the modal
+      },
+      error: function() {
+        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "An unknown error occurred.";
+        
+        $.notify({
+            message: errorMessage // Using the error from the server
+        }, {
+            type: 'danger', // Type of notification
+            placement: {
+                from: "top", 
+                align: "right"
+            },
+            offset: {
+                x: 20,
+                y: 60
+            },
+            delay: 5000, // Time before hiding the notification
+            z_index: 1050
+        });
+      }
+    });
+  });
+});
+
+</script>
+ 
+  </body></html>

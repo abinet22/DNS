@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eLibrary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="/assets2/css/elibrary.css">
+  <style>
+    :root {
+      --primary: #d99747;
+      --accent: #6ee7b7;
+      --light-bg: #f8fafd;
+      --header-grad: linear-gradient(90deg, #e0af27 0%, #6ee7b7 100%);
+      --card-bg: #fff;
+      --text: #89825b;
+      --muted: #59697b;
+      --border: #ebedf7;
+      --shadow: 0 3px 24px 0 rgba(80,112,225,0.06);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light-bg);
+      margin: 0;
+      color: var(--text);
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 25;
+      background: #fff;
+      box-shadow: 0 2px 12px 0 rgba(80,112,225,0.025);
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .7rem 2.4rem .7rem 2rem;
+    }
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.23rem;
+      color: var(--primary);
+      letter-spacing: -1px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+    }
+    .navbar-brand i {
+      color: var(--accent);
+      width: 26px;
+      height: 26px;
+    }
+    .navbar-links {
+      display: flex;
+      gap: 1.6rem;
+      align-items: center;
+    }
+    .navbar-link {
+      color: var(--text);
+      font-weight: 500;
+      text-decoration: none;
+      padding: .48em 1em;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: background .13s, color .11s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .navbar-link:hover,
+    .navbar-link.active {
+      background: #e6efff;
+      color: var(--primary);
+    }
+    .navbar-cta {
+      background: linear-gradient(90deg, #667eea 0%, #6ee7b7 100%);
+      border: none;
+      border-radius: .95em;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      padding: .5em 1.1em;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(94,107,195,0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background .14s;
+    }
+    .navbar-cta:hover {
+      background: linear-gradient(90deg, #4959ba 0%, #39cdae 100%);
+    }
+    .navbar-toggle {
+      display: none;
+      background: none;
+      border: none;
+      margin-left: 1em;
+      cursor: pointer;
+      padding: .3em;
+      border-radius: 8px;
+    }
+    .navbar-toggle .lucide {
+      width: 2em; height: 2em;
+      color: var(--primary);
+    }
+    @media (max-width:900px) {
+      .navbar { padding: .7rem 1.1rem .7rem 1rem; }
+      .navbar-links { gap: .8rem; }
+    }
+    @media (max-width: 700px) {
+      .navbar-links {
+        position: fixed;
+        left: 0; right: 0;
+        top: 4.1rem;
+        background: #fff;
+        flex-direction: column;
+        align-items: stretch;
+        transform: translateY(-112%);
+        transition: transform .22s cubic-bezier(.43,.15,.27,1.11);
+        gap: 0;
+        box-shadow: 0 8px 34px 0 rgba(70,90,190,0.07);
+        border-bottom-left-radius: 1.2em;
+        border-bottom-right-radius: 1.2em;
+        z-index: 99;
+      }
+      .navbar-links.active { transform: translateY(0); }
+      .navbar-link,
+      .navbar-cta {
+        width: 100%;
+        border-radius: 0;
+        padding: 1em 1.6em;
+      }
+      .navbar-link {
+        border-bottom: 1px solid #f2f5fb;
+        font-size: 1.07rem;
+      }
+      .navbar-cta {
+        border-bottom-left-radius: 1em;
+        border-bottom-right-radius: 1em;
+        margin-bottom: .4em;
+      }
+      .navbar-toggle { display: block; }
+    }
+    .navbar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(80,112,225, 0.11);
+      z-index: 90;
+      transition: opacity .24s;
+    }
+    .navbar-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Header */
+    .elibrary-header {
+      background: var(--header-grad);
+      padding: 2.5rem 0 2.2rem 0;
+      color: #fff;
+      text-align: center;
+      border-bottom-left-radius: 2rem;
+      border-bottom-right-radius: 2rem;
+      margin: 0;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .elibrary-header h1 {
+      margin-top: 0;
+      margin-bottom: .65em;
+      font-size: 2.45rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.15em;
+    }
+
+    /* Search Form */
+    .search-form {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      max-width: 410px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 999px;
+      padding: .13em;
+      box-shadow: 0 2px 18px rgba(57,76,159,0.08);
+    }
+    .search-form input[type="text"] {
+      flex: 1;
+      border: none;
+      padding: .67em 1.1em;
+      font-size: 1.07rem;
+      border-radius: 999px 0 0 999px;
+      outline: none;
+      font-family: inherit;
+      background: none;
+      min-width: 55px;
+    }
+    .search-form button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 0 999px 999px 0;
+      font-size: 1.07rem;
+      padding: .67em 1.6em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .17s;
+    }
+    .search-form button:hover {
+      background: #4959ba;
+    }
+
+    /* Main Content */
+    .elibrary-main {
+      max-width: 1050px;
+      margin: 2.2rem auto 0 auto;
+      background: var(--card-bg);
+      border-radius: 2rem;
+      box-shadow: var(--shadow);
+      padding: 2.3rem 2rem 2.7rem 2rem;
+    }
+
+    /* Categories Section */
+    .categories h2 {
+      margin: 0 0 1.1em 0;
+      font-weight: 600;
+      font-size: 1.31rem;
+      color: var(--primary);
+      letter-spacing: -.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .category-list {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.2rem;
+    }
+    .category-card {
+      flex: 1 1 210px;
+      max-width: 100%;
+      min-width: 190px;
+      background: #fcfdff;
+      border-radius: 1.25rem;
+      text-decoration: none;
+      color: var(--text);
+      padding: 1.6em 1.1em 1.2em 1.25em;
+      box-shadow: 0 2px 16px 0 rgba(93,117,231,0.04);
+      transition: box-shadow .15s, transform .12s;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: .47em;
+    }
+    .category-card:hover, .category-card:focus {
+      box-shadow: 0 5px 22px 0 rgba(57,76,199,0.10);
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      transform: translateY(-3px) scale(1.012);
+      outline: none;
+    }
+    .category-card h3 {
+      margin: 0;
+      font-size: 1.13rem;
+      font-weight: 600;
+      letter-spacing: -.5px;
+    }
+    .category-card p {
+      margin: .30em 0 0 0;
+      font-size: 1.01rem;
+      opacity: .92;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* Popular Files */
+    .popular-files h2 {
+      margin: 1em 0 .9em 0;
+      color: var(--primary);
+      font-size: 1.22rem;
+      font-weight: 600;
+      letter-spacing: -.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .file-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.3rem;
+      margin-bottom: -1rem;
+    }
+    .file-card {
+      background: #fafcff;
+      border-radius: 1.15rem;
+      flex: 1 1 225px;
+      max-width: 256px;
+      min-width: 170px;
+      padding: 1.12em 1.15em 1.12em 1.17em;
+      box-shadow: 0 1.5px 12px rgba(98,128,245,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: .271em;
+      border: 1.5px solid #eef2fb;
+      position: relative;
+    }
+    .file-card h3 {
+      margin: 0 0 .34em 0;
+      font-size: 1.085rem;
+      font-weight: 600;
+      color: #22336b;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .99rem;
+      line-height: 1.45em;
+      max-height: 2.95em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-card strong { color: #267ea3; }
+    .file-card .btn {
+      display: inline-block;
+      margin-top: .7em;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: .96rem;
+      padding: .53em 1.23em;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .file-card .btn:hover {
+      background: #4959ba;
+    }
+
+    /* Responsive layouts */
+    @media (max-width: 1050px) {
+      .elibrary-main { padding: 1.1rem .3rem 1.5rem .3rem; }
+      .categories .category-list, .file-list { gap: .9rem; }
+      .category-card, .file-card { min-width: 140px; }
+    }
+    @media (max-width: 700px) {
+      .elibrary-header { border-radius: 0; }
+      .elibrary-main { border-radius: 0; }
+      .categories .category-list, .file-list { flex-direction: column; }
+      .category-card, .file-card { max-width: none; width: 100%; }
+      .navbar { border-radius: 0; }
+    }
+  </style>
+
+  
+</head>
+<body>
+  <!-- Responsive Navbar -->
+  <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <a class="navbar-brand" href="/">
+      <i class="lucide" data-lucide="book-open"></i>
+     STVC CDMS
+    </a>
+    <button class="navbar-toggle" id="navbar-toggle" aria-label="Open Menu" aria-expanded="false">
+      <i class="lucide" data-lucide="menu"></i>
+    </button>
+    <div class="navbar-links" id="navbar-links">
+      <a class="navbar-link active " href="/selamcdms/dashboard">
+        <i class="lucide" data-lucide="home"></i>
+        Home
+      </a>
+      <a class="navbar-link " href="/selamcdms/cdmsusers/shared-materials">
+        <i class="lucide" data-lucide="library"></i>
+        Shared Files
+      </a>
+        <a class="navbar-link" href="/selamcdms/logout">
+  <i class="lucide" data-lucide="log-out"></i>
+  Logout
+</a>
+    </div>
+    <div class="navbar-overlay" id="navbar-overlay" tabindex="-1"></div>
+  </nav>
+
+  <header class="elibrary-header">
+    <h1>Welcome to the STVC CDMS</h1>
+    <form class="search-form" action="/selamcdms/elibrary/search" method="GET" autocomplete="off">
+      <input type="text" name="query" placeholder="Search for files..." required aria-label="Search for materials">
+      <button type="submit"><i class="lucide" data-lucide="search"></i> Search</button>
+    </form>
+  </header>
+
+  <main class="elibrary-main">
+    <section class="categories">
+       <div class="category-list">
+        <a href="/selamcdms/cdmsusers/shared-materials" class="category-card">
+          <h3><i class="lucide" data-lucide="library"></i> Shared Files</h3>
+          <p>Find notes, guides, and more.</p>
+        </a>
+   
+      
+      </div>
+    </section>
+
+   
+  </main>
+
+  <script>
+    // Navbar Responsive Menu
+    window.addEventListener('DOMContentLoaded', function() {
+      const $toggle = document.getElementById('navbar-toggle');
+      const $links = document.getElementById('navbar-links');
+      const $overlay = document.getElementById('navbar-overlay');
+
+      function closeMenu() {
+        $links.classList.remove('active');
+        $overlay.classList.remove('active');
+        $toggle.setAttribute('aria-expanded', 'false');
+      }
+      function openMenu() {
+        $links.classList.add('active');
+        $overlay.classList.add('active');
+        $toggle.setAttribute('aria-expanded', 'true');
+      }
+
+      $toggle.addEventListener('click', function() {
+        if ($links.classList.contains('active')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+      $overlay.addEventListener('click', closeMenu);
+
+      // Close menu on ESC key (accessibility)
+      document.addEventListener('keydown', function(e) {
+        if(e.key === "Escape") closeMenu();
+      });
+
+      // Optional: Close mobile nav when resizing to desktop view
+      window.addEventListener('resize', function() {
+        if(window.innerWidth > 700) closeMenu();
+      });
+
+      lucide.createIcons();
+    });
+    // For page updates (if navigating with pjax, etc)
+    document.addEventListener("DOMContentLoaded", () => lucide.createIcons());
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= file.name %> - eLibrary</title>
+  <link rel="stylesheet" href="/assets/css/elibrary.css">
+</head>
+<body>
+  <header class="elibrary-header">
+    <h1><%= file.name %></h1>
+    <p><%= file.description %></p>
+  </header>
+
+  <main class="elibrary-main">
+    <section class="file-preview">
+      <h2>Preview</h2>
+      <iframe src="/uploads/<%= file.path %>" width="100%" height="500px"></iframe>
+    </section>
+
+    <section class="file-actions">
+      <a href="/uploads/<%= file.path %>" download class="btn">Download</a>
+    </section>
+  </main>
+</body>
+</html>

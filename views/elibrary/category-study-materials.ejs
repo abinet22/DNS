@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Materials - eLibrary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --nav-bg: #fff;
+      --nav-primary: #667eea;
+      --nav-text: #2c3e4f;
+      --nav-accent: #6ee7b7;
+      --nav-hover: #e6efff;
+      --nav-border: #dcdef7;
+    }
+    body {
+      background: #f8fafd;
+      font-family: 'Inter', sans-serif;
+      color: #1a202c;
+      margin: 0;
+      padding: 0;
+    }
+    /* Responsive Navigation Bar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 30;
+      background: var(--nav-bg);
+      border-bottom: 1.5px solid var(--nav-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7rem 2.3rem 0.7rem 2rem;
+      transition: box-shadow .2s;
+      box-shadow: 0 2px 12px 0 rgba(80,112,225,0.03);
+    }
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--nav-primary);
+      letter-spacing: -1px;
+      text-decoration: none;
+    }
+    .navbar-brand i {
+      color: var(--nav-accent);
+      width: 28px;
+      height: 28px;
+    }
+    .navbar-links {
+      display: flex;
+      gap: 2.2rem;
+      align-items: center;
+    }
+    .navbar-link {
+      color: var(--nav-text);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      border-radius: 6px;
+      padding: .52em 1.05em;
+      transition: background .14s, color .12s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .navbar-link:hover,
+    .navbar-link.active {
+      background: var(--nav-hover);
+      color: var(--nav-primary);
+    }
+    .navbar-cta {
+      background: linear-gradient(90deg, #667eea 0%, #6ee7b7 100%);
+      border: none;
+      border-radius: .95em;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      padding: .60em 1.25em;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(94,107,195,0.10);
+      transition: background .19s, box-shadow .19s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .navbar-cta:hover {
+      background: linear-gradient(90deg, #4959ba 0%, #39cdae 100%);
+    }
+    .navbar-toggle {
+      display: none;
+      background: none;
+      border: none;
+      margin-left: 1em;
+      cursor: pointer;
+      padding: .3em;
+      border-radius: 8px;
+    }
+    .navbar-toggle:focus {
+      outline: 2px solid var(--nav-accent);
+    }
+    .navbar-toggle .lucide {
+      width: 2em; height: 2em;
+      color: var(--nav-primary);
+    }
+    @media (max-width: 950px) {
+      .navbar {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+    @media (max-width: 700px) {
+      .navbar-links {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 4rem;
+        background: var(--nav-bg);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        transform: translateY(-120%);
+        transition: transform .23s cubic-bezier(.43,.15,.27,1.11);
+        box-shadow: 0 8px 34px 0 rgba(70,90,190,0.07);
+        border-bottom-left-radius: 1.2em;
+        border-bottom-right-radius: 1.2em;
+        z-index: 99;
+      }
+      .navbar-links.active {
+        transform: translateY(0);
+      }
+      .navbar-link, .navbar-cta {
+        width: 100%;
+        border-radius: 0;
+        padding: 1em 1.6em;
+      }
+      .navbar-link {
+        border-bottom: 1px solid #f2f5fb;
+        font-size: 1.07rem;
+      }
+      .navbar-cta {
+        border-bottom-left-radius: 1.0em;
+        border-bottom-right-radius: 1.0em;
+        margin-bottom: .5em;
+      }
+      .navbar-toggle {
+        display: block;
+      }
+    }
+    /* Overlay for mobile nav */
+    .navbar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(80,112,225, 0.11);
+      z-index: 90;
+      transition: opacity .24s;
+    }
+    .navbar-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .elibrary-header {
+      background: linear-gradient(90deg, #667eea 0%, #6ee7b7 100%);
+      color: #fff;
+      padding: 2rem 0 1.5rem 0;
+      text-align: center;
+      border-bottom-left-radius: 2rem;
+      border-bottom-right-radius: 2rem;
+      box-shadow: 0 4px 18px 0 rgba(80, 112, 225, 0.13);
+      margin-top: 0;
+    }
+    .elibrary-header h1 {
+      font-weight: 600;
+      font-size: 2.3rem;
+      margin: 0 0 .5em 0;
+      letter-spacing: -2px;
+    }
+    .elibrary-header p {
+      font-size: 1.2rem;
+      opacity: 0.85;
+    }
+    .elibrary-main {
+      max-width: 1100px;
+      margin: 2rem auto 0 auto;
+      background: #fff;
+      border-radius: 2rem;
+      box-shadow: 0 8px 32px 0 rgba(28,36,54,0.06);
+      padding: 2rem 1.5rem 2.5rem 1.5rem;
+    }
+    .row {
+      display: flex;
+      gap: 2rem;
+      min-height: 500px;
+    }
+    .col-md-3 {
+      width: 270px;
+      min-width: 180px;
+      max-width: 320px;
+    }
+    .col-md-9 {
+      flex: 1;
+    }
+    h3 {
+      margin-top: 0;
+      font-weight: 600;
+      font-size: 1.24rem;
+      color: #313167;
+    }
+    /* Department List */
+    .department-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .department-btn {
+      width: 100%;
+      text-align: left;
+      background: linear-gradient(90deg, #677eea 0%, #68e7b7 100%);
+      color: #fff;
+      border: none;
+      border-radius: .9rem;
+      padding: .95rem 1.2rem;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(94,107,195,0.10);
+      transition: background .16s, box-shadow .16s;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .department-btn:hover,
+    .department-btn.active {
+      background: linear-gradient(90deg, #4959ba 0%, #39cdae 100%);
+      box-shadow: 0 4px 16px rgba(57,76,159,0.10);
+      color: #fff;
+    }
+
+    /* Folders and Files Tree */
+    #folder-structure {
+      margin-top: .5rem;
+      background: #f3f7fa;
+      border-radius: 1.5rem;
+      padding: 1.2rem 1.1rem 1.2rem 1.8rem;
+      min-height: 320px;
+      box-shadow: 0 4px 14px rgba(96,112,175,0.07);
+      font-size: 1.08rem;
+    }
+    .tree-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .tree-list > li {
+      margin-bottom: .6em;
+      padding-left: 0;
+      position: relative;
+      line-height: 1.7em;
+    }
+    .tree-folder {
+      font-weight: 600;
+      color: #2d447c;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      gap: 8px;
+      background: none;
+      border: none;
+      font-size: 1.03em;
+      padding: 0;
+      margin-bottom: .23em;
+      transition: color .15s;
+    }
+    .tree-folder:hover {
+      color: #4959ba;
+    }
+    .tree-file {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #325574;
+      transition: color .13s;
+      margin: 2px 0;
+      text-decoration: none;
+    }
+    .tree-file:hover {
+      color: #39cdae;
+      text-decoration: underline;
+    }
+    .tree-list .tree-sub {
+      margin-left: 20px;
+      padding-left: 16px;
+      border-left: 2px solid #e3ebe7;
+    }
+    .toggle-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 2px;
+    }
+    .tree-folder[aria-expanded="false"] .icon-chevron-down {
+      transform: rotate(-90deg);
+      transition: transform .2s;
+    }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .elibrary-main { padding: 0.9rem 0.2rem 1.5rem 0.2rem; }
+      .row { flex-direction: column; gap: 0.7rem; }
+      .col-md-3 { width: 100%; max-width: 100%; }
+    }
+    @media (max-width: 540px) {
+      .elibrary-header { border-radius: 0; }
+      .elibrary-main { border-radius: 0; }
+      #folder-structure { border-radius: 1em; padding: 0.9em 0.5em 0.9em 1.1em;}
+      .navbar { border-radius: 0; }
+    }
+    /* Custom Scrollbar */
+    #folder-structure {
+      overflow-y: auto;
+      max-height: 56vh;
+      scrollbar-width: thin;
+      scrollbar-color: #cddbf5 #e0f0f4;
+    }
+    #folder-structure::-webkit-scrollbar { width: 8px; }
+    #folder-structure::-webkit-scrollbar-thumb { background: #cddbf5; border-radius: 8px; }
+    #folder-structure::-webkit-scrollbar-track { background: #e0f0f4; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <!-- Responsive Navbar -->
+  <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <a class="navbar-brand" href="#">
+      <i class="lucide" data-lucide="book-open"></i>
+     STVC eLibrary
+    </a>
+    <button class="navbar-toggle" id="navbar-toggle" aria-label="Open Menu" aria-expanded="false">
+      <i class="lucide" data-lucide="menu"></i>
+    </button>
+    <div class="navbar-links" id="navbar-links">
+      <a class="navbar-link " href="/selamcdms/elibrary">
+        <i class="lucide" data-lucide="home"></i>
+        Home
+      </a>
+      <a class="navbar-link active" href="/selamcdms/elibrary/category/study-materials">
+        <i class="lucide" data-lucide="library"></i>
+        Study Materials and Shared Files
+      </a>
+     
+        <a class="navbar-link" href="/selamcdms/elibrary/category/references">
+        <i class="lucide" data-lucide="book"></i>
+        References
+      </a>
+    </div>
+    <div class="navbar-overlay" id="navbar-overlay" tabindex="-1"></div>
+  </nav>
+
+  <header class="elibrary-header">
+    <h1>eLibrary Study Materials</h1>
+    <p>Browse organized digital materials by department, folders, and files. Elegant, fast, and easy!</p>
+  </header>
+
+  <main class="elibrary-main">
+    <div class="row">
+      <!-- Left Sidebar: Departments -->
+      <div class="col-md-3">
+        <h3>
+          <i class="lucide" data-lucide="library"></i>
+          All
+        </h3>
+        <ul class="department-list">
+          <% departments.forEach(department => { %>
+            <li>
+              <button class="department-btn" data-department-id="<%= department.id %>">
+                <i class="lucide" data-lucide="building"></i>
+                <%= department.name %>
+              </button>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <!-- Right Content: File Structure Treeview -->
+      <div class="col-md-9">
+        <div id="folder-structure">
+          <h3>
+            <i class="lucide" data-lucide="folder"></i>
+            Folders and Files
+          </h3>
+          <p style="margin:.9em 0 0 0;color: #556;">Select a department to load folders and materials.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Navbar Responsive Menu
+    $(function() {
+      const $toggle = $('#navbar-toggle');
+      const $links = $('#navbar-links');
+      const $overlay = $('#navbar-overlay');
+
+      function closeMenu() {
+        $links.removeClass('active');
+        $overlay.removeClass('active');
+        $toggle.attr('aria-expanded', 'false');
+      }
+      function openMenu() {
+        $links.addClass('active');
+        $overlay.addClass('active');
+        $toggle.attr('aria-expanded', 'true');
+      }
+
+      $toggle.on('click', function() {
+        if($links.hasClass('active')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+      $overlay.on('click', closeMenu);
+
+      // Close menu on ESC key (accessibility)
+      $(document).on('keydown', function(e) {
+        if(e.key === "Escape") closeMenu();
+      });
+
+      // Optional: Close mobile nav when resizing to desktop view
+      $(window).on('resize', function() {
+        if(window.innerWidth > 700) closeMenu();
+      });
+    });
+
+    // Render Lucide icons globally
+    document.addEventListener("DOMContentLoaded", () => lucide.createIcons());
+
+    function renderTree(data, isRoot=true) {
+      let html = `<ul class="tree-list${isRoot ? "" : " tree-sub"}">`;
+      data.folders?.forEach(folder => {
+        html += `
+          <li>
+            <button class="tree-folder" aria-expanded="false" data-folder-id="${folder.id}">
+              <span class="toggle-icon">
+                <i class="lucide icon-chevron-down" data-lucide="chevron-down"></i>
+              </span>
+              <i class="lucide" data-lucide="${folder.shared ? 'users' : 'folder'}"></i>
+              ${folder.name}
+            </button>
+            <div class="tree-contents" style="display:none"></div>
+          </li>`;
+      });
+      data.files?.forEach(file => {
+        html += `
+          <li>
+            <a class="tree-file" href="/selamcdms${file.path}" target="_blank">
+              <i class="lucide" data-lucide="file-text"></i>
+              ${file.name}
+            </a>
+          </li>`;
+      });
+      html += '</ul>';
+      return html;
+    }
+
+    // Show loading skeleton
+    function showLoading(container, text) {
+      $(container).html(`
+        <div style="display:flex;align-items:center;gap:10px;margin:.9em 0;">
+          <i class="lucide" data-lucide="loader-2" style="animation:spin 1s linear infinite;"></i>
+          <span>${text}</span>
+        </div>
+        <style>@keyframes spin{to{transform:rotate(360deg);}}</style>
+      `);
+      lucide.createIcons();
+    }
+
+    $(document).ready(function () {
+      let selectedDepartment = null;
+
+      // Department click
+      $('.department-btn').on('click', function () {
+        $('.department-btn').removeClass('active');
+        $(this).addClass('active');
+        const departmentId = $(this).data('department-id');
+        selectedDepartment = departmentId;
+        showLoading('#folder-structure', 'Loading folders and files...');
+        $.get(`/selamcdms/elibrary/study-materials/${departmentId}`, function (data) {
+          let html = `
+            <h3 style="margin-bottom: .6em;"><i class="lucide" data-lucide="folder"></i> Folders and Files</h3>
+            ${renderTree(data)}
+          `;
+          $('#folder-structure').html(html);
+          lucide.createIcons();
+        }).fail(function () {
+          $('#folder-structure').html('<p style="color:#e44545">Error loading folders and files.</p>');
+        });
+      });
+
+      // Toggle folder expand/collapse and load subfolder contents only once
+      $(document).on('click', '.tree-folder', function (e) {
+        e.stopPropagation();
+        const $btn = $(this);
+        const expanded = $btn.attr('aria-expanded') === 'true';
+        $btn.attr('aria-expanded', !expanded);
+        const $contents = $btn.next('.tree-contents');
+        if (!expanded) {
+          if (!$contents.data('loaded')) {
+            showLoading($contents, 'Loading subfolder contents...');
+            const folderId = $btn.data('folder-id');
+            $.get(`/selamcdms/elibrary/study-materials/subfolder/${folderId}`, function (data) {
+              $contents.html(renderTree({
+                folders: data.subFolders,
+                files: data.files
+              }, false));
+              $contents.data('loaded', true);
+              lucide.createIcons();
+            }).fail(function () {
+              $contents.html('<p style="color:#e44545;padding-left:5px;">Failed to load.</p>');
+            });
+          }
+          $contents.slideDown(130);
+        } else {
+          $contents.slideUp(130);
+        }
+      });
+
+      // Initial icons render (for static header/sidebar icons)
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

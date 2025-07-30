@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= category.name %> - eLibrary</title>
+  <link rel="stylesheet" href="/assets/css/elibrary.css">
+</head>
+<body>
+  <header class="elibrary-header">
+    <h1><%= category.name %></h1>
+    <p><%= category.description %></p>
+  </header>
+
+  <main class="elibrary-main">
+    <section class="file-list">
+      <% files.forEach(file => { %>
+        <div class="file-card">
+          <h3><%= file.name %></h3>
+          <p><%= file.description %></p>
+          <p><strong>Views:</strong> <%= file.views %></p>
+          <a href="/elibrary/file/<%= file.id %>" class="btn">View</a>
+        </div>
+      <% }) %>
+    </section>
+  </main>
+</body>
+</html>

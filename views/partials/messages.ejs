@@ -1,0 +1,81 @@
+<% if(success_msg != '') { %>
+  <script>
+    // Create the notification element dynamically
+    var notification = document.createElement('div');
+    notification.setAttribute('data-notify', 'container');
+    notification.className = 'col-xs-11 col-sm-4 alert alert-success alert-with-icon';
+    notification.setAttribute('role', 'alert');
+    notification.setAttribute('data-notify-position', 'top-right');
+    notification.style.cssText = 'display: inline-block; margin: 0px auto; position: fixed; transition: 0.5s ease-in-out; z-index: 1060; top: 20px; right: 20px;';
+    
+    // Close button
+    var closeButton = document.createElement('button');
+    closeButton.setAttribute('type', 'button');
+    closeButton.setAttribute('aria-hidden', 'true');
+    closeButton.className = 'close';
+    closeButton.setAttribute('data-notify', 'dismiss');
+    closeButton.style.cssText = 'position: absolute; right: 10px; top: 50%; margin-top: -13px; z-index: 1062;';
+    closeButton.innerHTML = '<i class="now-ui-icons ui-1_simple-remove"></i>';
+    closeButton.onclick = function() {
+      notification.style.display = 'none';
+    };
+    
+    // Icon and message
+    var icon = document.createElement('span');
+    icon.setAttribute('data-notify', 'icon');
+    icon.className = 'now-ui-icons ui-1_bell-53';
+
+    var message = document.createElement('span');
+    message.setAttribute('data-notify', 'message');
+    message.innerHTML = '<%= success_msg %>';
+
+    // Append elements to notification
+    notification.appendChild(closeButton);
+    notification.appendChild(icon);
+    notification.appendChild(message);
+
+    // Append the notification to the body
+    document.body.appendChild(notification);
+  </script>
+<% } %>
+
+<% if(error_msg != '') { %>
+  <script>
+    // Create the notification element dynamically for error
+    var notification = document.createElement('div');
+    notification.setAttribute('data-notify', 'container');
+    notification.className = 'col-xs-11 col-sm-4 alert alert-danger alert-with-icon';
+    notification.setAttribute('role', 'alert');
+    notification.setAttribute('data-notify-position', 'top-right');
+    notification.style.cssText = 'display: inline-block; margin: 0px auto; position: fixed; transition: 0.5s ease-in-out; z-index: 1060; top: 20px; right: 20px;';
+    
+    // Close button
+    var closeButton = document.createElement('button');
+    closeButton.setAttribute('type', 'button');
+    closeButton.setAttribute('aria-hidden', 'true');
+    closeButton.className = 'close';
+    closeButton.setAttribute('data-notify', 'dismiss');
+    closeButton.style.cssText = 'position: absolute; right: 10px; top: 50%; margin-top: -13px; z-index: 1062;';
+    closeButton.innerHTML = '<i class="now-ui-icons ui-1_simple-remove"></i>';
+    closeButton.onclick = function() {
+      notification.style.display = 'none';
+    };
+    
+    // Icon and message
+    var icon = document.createElement('span');
+    icon.setAttribute('data-notify', 'icon');
+    icon.className = 'now-ui-icons ui-1_bell-53';
+
+    var message = document.createElement('span');
+    message.setAttribute('data-notify', 'message');
+    message.innerHTML = '<%= error_msg %>';
+
+    // Append elements to notification
+    notification.appendChild(closeButton);
+    notification.appendChild(icon);
+    notification.appendChild(message);
+
+    // Append the notification to the body
+    document.body.appendChild(notification);
+  </script>
+<% } %>
