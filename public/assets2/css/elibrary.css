@@ -1,0 +1,64 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+.elibrary-header {
+  background-color: #007bff;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.search-form {
+  margin-top: 10px;
+}
+
+.search-form input {
+  padding: 10px;
+  width: 300px;
+}
+
+.search-form button {
+  padding: 10px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.categories, .popular-files {
+  margin: 20px;
+}
+
+.category-list, .file-list {
+  display: flex;
+  gap: 20px;
+}
+
+.category-card, .file-card {
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.category-card:hover, .file-card:hover {
+  background-color: #f1f1f1;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}

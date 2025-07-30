@@ -1,0 +1,44 @@
+server {
+    listen 8080;
+    listen [::]:8080;
+
+    server_name 196.189.61.123;
+
+    # Default location (root) serving static files for the admin or default content
+    location / {
+        gzip_static on;
+        expires 12h;
+        alias /var/www/selampms/public/;  # Adjust this path as needed for a default admin/public location
+        add_header Cache-Control public;
+
+
+    }
+
+    # Serve static files for /selampms/ from /var/www/selampms/public
+    location /stvcpms/ {
+        # Use alias to directly serve files from /var/www/selampms/public/
+  alias /var/www/selampms/public/;  # Adjust this path as needed for a default admin/public location
+            
+        # Proxy requests to the backend for /selampms/
+        proxy_pass http://localhost:5015/;  # Assuming backend service for selampms is on port 5004
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Serve static files for /selamcdms/ from /var/www/selamcdms/public
+    location /selamcdms/ {
+        # Use alias to directly serve files from /var/www/selamcdms/public/
+       alias /var/www/selamcdms/public/;  # Adjust this path as needed for a default admin/public location
+        
+        # Proxy requests to the backend for /selamcdms/
+        proxy_pass http://localhost:5017/;  # Assuming backend service for selamcdms is on port 5002
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
