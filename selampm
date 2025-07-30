@@ -2,7 +2,7 @@ server {
     listen 8080;
     listen [::]:8080;
 
-    server_name 196.189.61.123;
+    server_name 192.168.26.200;
 
     # Default location (root) serving static files for the admin or default content
     location / {
